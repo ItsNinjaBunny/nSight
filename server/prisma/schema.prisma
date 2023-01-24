@@ -18,9 +18,11 @@ model User {
   image       String?
   verified    Boolean @default(false)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Session   Session[]
+  clients Client[]  @relation("User Clients")
+  Session Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
@@ -29,4 +31,25 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum ClientType {
+  prospect
+  client
+  dead
+}
+
+model Client {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String   @unique
+  phoneNumber String?  @unique
+  image       String?
+  notes       String[] @default([])
+  user        User[]   @relation("User Clients")
+
+  clientType ClientType @default(prospect)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
