@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { NavigationLink } from '../types';
-import { Tooltip } from '../../tooltip/Tooltip';
 
 type Props = {
   selected: string;
