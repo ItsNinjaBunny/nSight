@@ -1,6 +1,6 @@
 import { HouseIcon, CalendarIcon, UsersIcon, ChartBarIcon, UserCircleIcon } from '../icons'
 
-const className = 'w-6 h-6 text-slate-800'
+const className = 'w-6 h-6 md:w-8 md:h-8'
 
 export const Links = [
   {

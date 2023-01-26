@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { Settings } from './Settings';
 
 type Props = {
+  selected: string;
+  className: string;
   links: NavigationLink[];
 }
 
-export const MobileNavigation = ({ links }: Props) => {
+export const MobileNavigation = ({ selected, links, className }: Props) => {
   const [settings, setSettings] = useState(false);
 
   const toggleSettings = () => setSettings(true);
@@ -16,7 +18,7 @@ export const MobileNavigation = ({ links }: Props) => {
 
   return (
     <>
-      <nav className='fixed flex bottom-0 w-full bg-slate-200/90 py-2 shadow-md'>
+      <nav className={`${className} fixed flex bottom-0 w-full bg-slate-200/90 py-2 shadow-md`}>
         <ul className='flex justify-evenly items-center w-full'>
           {
             links.map((link) => {
