@@ -19,10 +19,11 @@ export class UsersService {
     phoneNumber: true,
     verified: true,
   }) {
-    const { password, ...user } = createUserDto;
+    const { email, password, ...user } = createUserDto;
 
     const result = await this.prisma.user.create({
       data: {
+        email: email.toLowerCase(),
         password: await this.encryptionService.hash(password, 10),
         ...user,
       },
@@ -105,5 +106,21 @@ export class UsersService {
     if (result) return result;
 
     return null;
+  }
+
+  async findOneByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: email
+      },
+      select: {
+        id: true,
+        password: true,
+      }
+    });
+
+    if (!user) return null;
+
+    return user;
   }
 }
