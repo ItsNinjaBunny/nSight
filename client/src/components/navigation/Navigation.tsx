@@ -1,5 +1,5 @@
 import { DesktopNavigation } from './Desktop'
-import { MobileNavigation } from './Mobile'
+import { MobileNavigation } from './mobile/Mobile'
 import { Links } from './Links';
 
 export const Navigation = () => {
