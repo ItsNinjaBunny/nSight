@@ -12,19 +12,22 @@
 @layer components {
 
   .hide--clients {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease-in-out;
+    animation: change-height 1s ;
+    opacity: 0 !important;
+    transition: all 0.7s !important; 
+    height:0;
     /* @apply opacity-0 duration-700 pointer-events-none; */
   }
-
+  .cardTest{
+    transition:0.7s!important;
+  }
   .show--clients {
     @apply opacity-100 duration-700;
   }
 
   .selected--client {
-    animation: go-to-top 0.7s ease-in;
-
+    background-color: beige;
+    transition: all!important;
   }
 
   .height-animation {
@@ -33,11 +36,11 @@
 
   @keyframes change-height {
     0% {
-      height: 500px;
+      height: 80px;
     }
 
     100% {
-      height: 128px;
+      height: 0;
     }
 
   }

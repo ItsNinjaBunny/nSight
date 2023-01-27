@@ -25,7 +25,6 @@ export const ClientManager = ({ className, data, selected, setSelected }: Props)
 
     event.currentTarget.className += ' selected--client';
     setTimeout(() => {
-      setHide('hidden');
       setChangeHeight('height-animation');
     }, 500)
   };
@@ -36,11 +35,11 @@ export const ClientManager = ({ className, data, selected, setSelected }: Props)
 
   return (
     <>
-      <section className={`${className} bg-red-500 p-2 h-[600px]`}>
+      <section className={`${className} bg-red-500 p-2 h-[600px] transition-all relative`}>
         {
           data.map(card => (
             <ClientCard onClick={(e: any) => handleSelected(card, e)}
-              className={`${selected &&
+              className={`cardTest ${selected &&
                 JSON.stringify(cardSelected) !== JSON.stringify(card) ? hide : show}`}
               key={card.id} card={card} />
           ))
