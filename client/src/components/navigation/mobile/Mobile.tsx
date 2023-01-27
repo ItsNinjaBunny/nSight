@@ -14,7 +14,6 @@ export const MobileNavigation = ({ selected, links, className }: Props) => {
 
   const toggleSettings = () => setSettings(true);
   const closeSettings = () => setSettings(false);
-  console.log(settings);
 
   return (
     <>
@@ -27,7 +26,7 @@ export const MobileNavigation = ({ selected, links, className }: Props) => {
                   <li key={link.name}>
                     <Link href={link.href}>{link.icon}</Link>
                   </li>
-                )
+                );
               }
 
               return (
