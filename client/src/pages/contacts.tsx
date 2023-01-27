@@ -24,7 +24,7 @@ const ClientsPage: NextPage = () => {
       <main className='w-full min-h-screen flex flex-col bg-slate-900'>
         <Navigation />
         <div className={`relative w-full flex flex-col items-center space-y-8 duration-300`}>
-          <div className={`flex flex-row w-11/12 justify-between items-center my-4 px-4 py-4 bg-slate-200/80 rounded text-black ${selected ? 'hide--clients' : 'show--clients'}`}>
+          <div className={` transition-all duration-700 flex flex-row w-11/12 justify-between items-center my-4 px-4 py-4 bg-slate-200/80 rounded text-black ${selected ? 'opacity-0' : 'opacity-1'}`}>
             <h1 className='text-lg tracking-wider'>
               Clients
             </h1>

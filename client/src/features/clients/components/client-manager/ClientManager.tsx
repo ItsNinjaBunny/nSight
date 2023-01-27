@@ -14,18 +14,22 @@ export const ClientManager = ({ className, data, selected, setSelected }: Props)
   const [cardSelected, setCardSelected] = useState<Card | null>(null);
   const [hide, setHide] = useState('hide--clients');
   const [changeHeight, setChangeHeight] = useState('');
-
+  const firstCard = data[0];
   const show = 'show--clients';
 
   const handleSelected = async (card: Card, event: any) => {
+  
     setCardSelected({
-      ...card
+      ...card,
+      
     });
+    
     setSelected((prev: boolean) => !prev);
 
     event.currentTarget.className += ' selected--client';
+    if(event.currentTarget.className)
     setTimeout(() => {
-      setChangeHeight('height-animation');
+      setHide('height-animation');
     }, 500)
   };
 
@@ -35,11 +39,11 @@ export const ClientManager = ({ className, data, selected, setSelected }: Props)
 
   return (
     <>
-      <section className={`${className} bg-red-500 p-2 h-[600px] transition-all relative`}>
+      <section className={`${selected ? '' : ''} p-2 h-[100%] overflow-y-show transition-all relative`}>
         {
           data.map(card => (
             <ClientCard onClick={(e: any) => handleSelected(card, e)}
-              className={`cardTest ${selected &&
+              className={` ${selected &&
                 JSON.stringify(cardSelected) !== JSON.stringify(card) ? hide : show}`}
               key={card.id} card={card} />
           ))

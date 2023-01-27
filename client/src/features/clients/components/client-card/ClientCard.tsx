@@ -14,7 +14,7 @@ type Props = {
 export const ClientCard = ({ card, className, onClick }: Props) => {
 
   return (
-    <div key={card.id} onClick={onClick ? (e) => onClick(e) : undefined} className={`bg-slate-300 rounded relative transition-all ${className ? className : ''}`}>
+    <div key={card.id} onClick={onClick ? (e) => onClick(e) : undefined} className={`first:mt-3 mt-5 last:mb-3 bg-slate-300 rounded relative transition-all ${className ? className : ''}`}>
       <ArrowLeftIcon className={`absolute top-1 left-0.5 w-5 h-5 `} />
       <div className='flex flex-row items-center justify-between mx-6 py-4'>
         <div className='flex space-x-2'>
