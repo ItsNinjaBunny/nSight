@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UpdateUserDto } from '@app/common';
+import { CreateUserDto, UpdateUserDto, Public } from '@app/common';
 
 @Controller('users')
 export class UsersController {
@@ -9,6 +9,7 @@ export class UsersController {
     private readonly usersService: UsersService
   ) { }
 
+  @Public()
   @Post()
   async create(
     @Body('user') createUserDto: CreateUserDto

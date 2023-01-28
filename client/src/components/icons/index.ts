@@ -5,3 +5,5 @@ export * from './CalendarIcon';
 export * from './UserPlusIcon';
 export * from './CirclePlusIcon';
 export * from './UserCircleIcon';
+export * from './EyeIcon';
+export * from './EyeSlashIcon';
