@@ -14,5 +14,8 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  env: {
+    host: 'http://localhost:8080',
+  }
 };
 export default config;
