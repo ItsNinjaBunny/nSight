@@ -32,7 +32,7 @@ export const SignIn = ({ isSignIn, setIsSignIn }: Props) => {
     <div className='flex flex-col relative items-center justify-center 
       space-y-4 rounded mx-8 px-8 py-4 w-full bg-slate-200/80 
       shadow-slate-500 shadow-xl'>
-      < h1 className='text-4xl py-2'>nSight</h1 >
+      < h1 className='text-4xl py-2'></h1 >
       <Input type='text'
         onChange={setUsername} value={username}
         label='Username'
