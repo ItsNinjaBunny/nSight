@@ -24,16 +24,16 @@ export class AuthService {
   async validateUser({ email, password }: Credentials) {
     const user = await this.usersService.findOneByEmail(email.toLowerCase());
 
-    if (!user.id && !user.password) return null;
+    if(!user.id && !user.password) return null;
 
-    if (!await this.encryptionService.compare(password, user.password)) return null;
+    if(!await this.encryptionService.compare(password, user.password)) return null;
 
-    return { id: user.id, email: email };
+    return { id: user.id };
   }
 
   async login(payload: { id: string }) {
     const [accessToken, refreshToken] = await this.generateTokens(payload.id);
-    if (!accessToken || !refreshToken) throw new HttpException('Error at login', HttpStatus.UNAUTHORIZED);
+    if(!accessToken || !refreshToken) throw new HttpException('Error at login', HttpStatus.UNAUTHORIZED);
 
     const id = await this.updateRefreshToken(payload.id, refreshToken);
 
@@ -52,41 +52,37 @@ export class AuthService {
       }
     });
 
-    return { sessionDeleted: true }
+    return { session: 'deleted' };
   }
 
-  async updateRefreshToken(id: string, rt: string) {
+  async updateRefreshToken(userId: string, rt: string) {
     const hash = await this.encryptionService.hash(rt, 10);
 
-    const session = await this.prisma.session.findUnique({
-      where: {
-        userId: id
-      }
+    const { id } = await this.prisma.$transaction(async (prisma) => {
+      const session = await prisma.session.findUnique({
+        where: {
+          userId: userId,
+        }
+      });
+
+      return session ? await prisma.session.update({
+        where: {
+          userId: userId
+        },
+        data: {
+          sessionToken: hash,
+        },
+        select: { id: true }
+      }) : await prisma.session.create({
+        data: {
+          userId: userId,
+          sessionToken: hash,
+        },
+        select: { id: true }
+      });
     });
 
-    const [sessionId] = await this.prisma.$transaction([
-      session ? this.prisma.session.update({
-        where: {
-          userId: id
-        },
-        data: {
-          sessionToken: hash
-        },
-        select: {
-          id: true,
-        }
-      }) : this.prisma.session.create({
-        data: {
-          userId: id,
-          sessionToken: hash
-        },
-        select: {
-          id: true,
-        }
-      }),
-    ]);
-
-    return sessionId;
+    return id;
   }
 
   async refreshTokens(id: string, rt: string) {
@@ -99,15 +95,27 @@ export class AuthService {
       }
     });
 
-    if (!session) throw new HttpException('Session not found', HttpStatus.UNAUTHORIZED);
+    if(!session) throw new HttpException({
+      error: 'Session not found',
+      status: HttpStatus.UNAUTHORIZED,
+      success: false,
+    }, HttpStatus.UNAUTHORIZED);
 
     const isValid = await this.encryptionService.compare(rt, session.sessionToken);
 
-    if (!isValid) throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
+    if(!isValid) throw new HttpException({
+      error: 'Invalid refresh token',
+      status: HttpStatus.UNAUTHORIZED,
+      success: false,
+    }, HttpStatus.UNAUTHORIZED);
 
     const [accessToken, refreshToken] = await this.generateTokens(id);
 
-    if (!accessToken || !refreshToken) throw new HttpException('Error at refresh tokens', HttpStatus.UNAUTHORIZED);
+    if(!accessToken || !refreshToken) throw new HttpException({
+      error: 'Error at refresh tokens',
+      status: HttpStatus.BAD_REQUEST,
+      success: false,
+    }, HttpStatus.BAD_REQUEST);
 
     await this.updateRefreshToken(id, refreshToken);
 

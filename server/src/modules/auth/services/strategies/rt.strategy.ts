@@ -12,14 +12,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'rt-jwt') {
     private readonly config: ConfigService
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([(req: Request) => {
-        console.log('looking for cookie');
-        console.log('cookies', req.cookies);
-        let data = req?.cookies['refreshToken'];
-        if (!data) return null;
-
-        return data;
-      }]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: config.get('RT_JWT_TOKEN'),
       passReqToCallback: true,
@@ -27,15 +20,11 @@ export class RtStrategy extends PassportStrategy(Strategy, 'rt-jwt') {
   }
 
   async validate(req: Request, payload: { id: string }) {
-    const refreshToken = req.get('cookie').replace('refreshToken=', '').trim();
+    const refreshToken = req.get('authorization').replace('Bearer ', '').trim();
+    console.log('rt', refreshToken)
     return {
       ...payload,
       refreshToken,
     }
-    // const refreshToken = req.get('authorization').replace('Bearer ', '').trim();
-    // return {
-    //   ...payload,
-    //   refreshToken,
-    // }
   }
 }

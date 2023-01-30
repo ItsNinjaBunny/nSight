@@ -1,8 +1,7 @@
-import { Controller, Headers, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseGuards, HttpCode } from '@nestjs/common';
 import { AuthService } from './services';
 import { LocalGuard, RtGuard } from './guards';
-import { Cookie, GetCurrentUser, GetCurrentUserId, Public } from '@app/common';
-import { Response } from 'express';
+import { GetCurrentUser, GetCurrentUserId, Public } from '@app/common';
 
 @Controller('auth')
 export class AuthController {
@@ -10,59 +9,37 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalGuard)
+  @HttpCode(200)
   @Post('login')
   async login(
-    @Req() req: any,
-    @Res({ passthrough: true }) res: Response,
+    @GetCurrentUser()
+    user: { id: string },
   ) {
-
-    const user = req.user as { id: string };
+    console.log('user', user);
 
     const { accessToken, refreshToken, success } = await this.authService.login(user);
-    res.cookie('refreshToken', refreshToken, {
-      // httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
-    });
     return {
       accessToken,
+      refreshToken,
       success,
     };
   }
 
   @Public()
-  // @UseGuards(RtGuard)
-  @Get('test')
-  async test(
-    @Headers() headers: any,
-    // @Cookie('refreshToken')
-    // rt: string,
-    // @GetCurrentUserId()
-    // id: string,
-  ) {
-    console.log(headers);
-    // console.log('rt', rt, 'id', id);
-    return;
-  }
-
-  @Public()
   @UseGuards(RtGuard)
+  @HttpCode(200)
   @Post('refresh')
   async refreshTokens(
     @GetCurrentUserId()
     id: string,
-    @Cookie('refreshToken')
+    @GetCurrentUser('refreshToken')
     rt: string,
-    @Res({ passthrough: true }) res: Response,
   ) {
     const { accessToken, refreshToken, success } = await this.authService.refreshTokens(id, rt);
 
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
-    });
-
     return {
       accessToken,
+      refreshToken,
       success,
     }
   }
