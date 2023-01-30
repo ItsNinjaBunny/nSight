@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 
-type ClientType = 'prospect' | 'client' | 'dead';
+type ClientType = 'client' | 'lead' | 'other';
 
 export class CreateClientDto {
   firstName: string;

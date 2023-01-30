@@ -18,11 +18,4 @@ export class AtGuard extends AuthGuard('at-jwt') {
 
     return isPublic ? true : super.canActivate(context);
   }
-
-  handleRequest(err, user, info) {
-    if (err || !user) {
-      throw err || new UnauthorizedException();
-    }
-    return user;
-  }
 }

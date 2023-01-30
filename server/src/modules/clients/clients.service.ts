@@ -19,7 +19,7 @@ export class ClientsService {
   }) {
     const client = await this.prisma.client.create({
       data: {
-        ...createClientDto
+        ...createClientDto,
       },
       select: options
     });

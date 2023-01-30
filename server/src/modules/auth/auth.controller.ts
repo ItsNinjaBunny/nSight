@@ -1,7 +1,8 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Headers, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './services';
 import { LocalGuard, RtGuard } from './guards';
-import { GetCurrentUser, GetCurrentUserId, Public } from '@app/common';
+import { Cookie, GetCurrentUser, GetCurrentUserId, Public } from '@app/common';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -11,11 +12,36 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @Post('login')
   async login(
-    @Request() req: any
+    @Req() req: any,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    const user = req.user as { id: string, email: string };
 
-    return this.authService.login(user);
+    const user = req.user as { id: string };
+
+    const { accessToken, refreshToken, success } = await this.authService.login(user);
+    res.cookie('refreshToken', refreshToken, {
+      // httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    return {
+      accessToken,
+      success,
+    };
+  }
+
+  @Public()
+  // @UseGuards(RtGuard)
+  @Get('test')
+  async test(
+    @Headers() headers: any,
+    // @Cookie('refreshToken')
+    // rt: string,
+    // @GetCurrentUserId()
+    // id: string,
+  ) {
+    console.log(headers);
+    // console.log('rt', rt, 'id', id);
+    return;
   }
 
   @Public()
@@ -24,10 +50,21 @@ export class AuthController {
   async refreshTokens(
     @GetCurrentUserId()
     id: string,
-    @GetCurrentUser('refreshToken')
-    refreshToken: string
+    @Cookie('refreshToken')
+    rt: string,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.refreshTokens(id, refreshToken);
+    const { accessToken, refreshToken, success } = await this.authService.refreshTokens(id, rt);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return {
+      accessToken,
+      success,
+    }
   }
 
   @Post('logout')

@@ -3,7 +3,7 @@ import { SignIn, SignUp } from '../../features';
 import { useState } from 'react';
 
 const AuthPage: NextPage = () => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(true);
 
   return (
     <>
