@@ -31,16 +31,17 @@ export class AuthService {
     return { id: user.id, email: email };
   }
 
-  async login(payload: { id: string, email: string }) {
-    const [accessToken, refreshToken] = await this.generateTokens(payload.id, payload.email);
+  async login(payload: { id: string }) {
+    const [accessToken, refreshToken] = await this.generateTokens(payload.id);
     if (!accessToken || !refreshToken) throw new HttpException('Error at login', HttpStatus.UNAUTHORIZED);
 
-    this.updateRefreshToken(payload.id, refreshToken);
+    const id = await this.updateRefreshToken(payload.id, refreshToken);
 
     return {
-      success: true,
+      id,
       accessToken,
       refreshToken,
+      success: true,
     };
   }
 
@@ -63,21 +64,29 @@ export class AuthService {
       }
     });
 
-    await this.prisma.$transaction([
+    const [sessionId] = await this.prisma.$transaction([
       session ? this.prisma.session.update({
         where: {
           userId: id
         },
         data: {
           sessionToken: hash
+        },
+        select: {
+          id: true,
         }
       }) : this.prisma.session.create({
         data: {
           userId: id,
           sessionToken: hash
+        },
+        select: {
+          id: true,
         }
       }),
     ]);
+
+    return sessionId;
   }
 
   async refreshTokens(id: string, rt: string) {
@@ -87,11 +96,6 @@ export class AuthService {
       },
       select: {
         sessionToken: true,
-        user: {
-          select: {
-            email: true,
-          }
-        }
       }
     });
 
@@ -101,7 +105,7 @@ export class AuthService {
 
     if (!isValid) throw new HttpException('Invalid refresh token', HttpStatus.UNAUTHORIZED);
 
-    const [accessToken, refreshToken] = await this.generateTokens(id, session.user.email);
+    const [accessToken, refreshToken] = await this.generateTokens(id);
 
     if (!accessToken || !refreshToken) throw new HttpException('Error at refresh tokens', HttpStatus.UNAUTHORIZED);
 
@@ -114,13 +118,13 @@ export class AuthService {
     };
   }
 
-  async generateTokens(id: string, email: string) {
+  async generateTokens(id: string) {
     return await Promise.all([
-      this.jwtService.sign({ id, email }, {
+      this.jwtService.sign({ id }, {
         secret: this.config.get<string>('AT_JWT_TOKEN'),
         expiresIn: 60 * 15,
       }),
-      this.jwtService.sign({ id, email }, {
+      this.jwtService.sign({ id }, {
         secret: this.config.get<string>('RT_JWT_TOKEN'),
         expiresIn: 60 * 60 * 24 * 7,
       }),

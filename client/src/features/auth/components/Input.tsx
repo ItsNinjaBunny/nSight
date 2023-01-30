@@ -47,10 +47,10 @@ export const Input = ({ label, type, placeholder,
           value={value} className={`${className} w-full pr-6`}
         />
         {show ? <EyeSlashIcon onClick={handleShow}
-          className='absolute right-0 bottom-1 w-5 h-5 text-slate-900' />
+          className='absolute right-0 bottom-1 w-5 h-5 text-slate-900 cursor-pointer' />
           :
           <EyeIcon onClick={handleShow}
-            className='absolute right-0 bottom-1 w-5 h-5 text-slate-900' />
+            className='absolute right-0 bottom-1 w-5 h-5 text-slate-900 cursor-pointer' />
         }
       </div>
     </div>

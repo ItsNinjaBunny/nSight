@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const logger = new Logger(AppModule.name);
@@ -9,8 +10,11 @@ async function bootstrap() {
   const config = app.get<ConfigService>(ConfigService);
   const port = config.get<number>('PORT');
 
+  app.use(cookieParser());
   app.enableCors({
+    credentials: true,
     origin: config.get<string>('CORS_ORIGIN'),
+    // origin: 'http://localhost:8080',
     methods: [
       'GET',
       'POST',

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Input } from '../components';
+import { request } from '../functions';
 
 type Props = {
   isSignIn: boolean;
@@ -12,17 +13,9 @@ export const SignUp = ({ isSignIn, setIsSignIn }: Props) => {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const checkBlank = (value: string) => {
-    if (value === '') {
-      return false;
-    }
-    return true;
-  }
-  console.log(process.env.host);
   const handleRegister = async () => {
-    const response = await fetch(`${process.env.host}/users`, {
+    const data = await request<unknown>(`${process.env.host}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,57 +31,57 @@ export const SignUp = ({ isSignIn, setIsSignIn }: Props) => {
       }),
     });
 
-    const data = await response.json();
+    console.log(data);
 
   }
 
 
   return (
     <div className='flex flex-col relative items-center justify-center 
-    space-y-4 rounded mx-8 px-8 py-4 w-full bg-slate-200/80 
+    space-y-4 rounded mx-8 sm:mx-16 px-8 py-4 w-full bg-slate-200/80 
     shadow-slate-500 shadow-xl'>
-      < h1 className='text-4xl py-2'>nSight</h1 >
+      <h1 className='text-5xl py-2 relative'>Pipeline</h1 >
       <div className='w-full flex flex-col space-y-2'>
-        <Input type='text'
-          onChange={setFirstName} value={firstName}
-          label='First Name'
-          className='outline-none bg-transparent
-      px-1 border-b-2 pb-0.5 border-slate-900'
-        />
-        <Input type='text'
-          onChange={setLastName} value={lastName}
-          label='Last Name'
-          className='outline-none bg-transparent
-      px-1 border-b-2 pb-0.5 border-slate-900'
-        />
-        <Input type='email'
-          onChange={setEmail} value={email}
-          label='Email'
-          className='outline-none bg-transparent
-          px-1 border-b-2 pb-0.5 border-slate-900'
-        />
-        <Input type='tel'
-          onChange={setPhoneNumber} value={phoneNumber}
-          label='Phone Number'
-          className='outline-none bg-transparent
-          px-1 border-b-2 pb-0.5 border-slate-900'
-        />
+        <div className='flex-col space-y-2 sm:flex sm:flex-row sm:w-full sm:gap-4
+          sm:space-y-0'>
+          <Input type='text'
+            onChange={setFirstName} value={firstName}
+            label='First Name'
+            className='outline-none bg-transparent text-gray-700 font-medium
+              px-1 border-b-2 pb-0.5 border-slate-900'
+          />
+          <Input type='text'
+            onChange={setLastName} value={lastName}
+            label='Last Name'
+            className='outline-none bg-transparent text-gray-700 font-medium
+              px-1 border-b-2 pb-0.5 border-slate-900'
+          />
+        </div>
+        <div className='flex-col space-y-2 sm:flex sm:flex-row sm:w-full sm:gap-4
+          sm:space-y-0'>
+          <Input type='email'
+            onChange={setEmail} value={email}
+            label='Email'
+            className='outline-none bg-transparent text-gray-700 font-medium
+              px-1 border-b-2 pb-0.5 border-slate-900 sm:flex-1'
+          />
+          <Input type='tel'
+            onChange={setPhoneNumber} value={phoneNumber}
+            label='Phone Number'
+            className='outline-none bg-transparent text-gray-700 font-medium
+              px-1 border-b-2 pb-0.5 border-slate-900'
+          />
+        </div>
         <Input type='password'
           onChange={setPassword} value={password}
           label='Password'
-          className='outline-none bg-transparent
-          px-1 border-b-2 pb-0.5 border-slate-900'
-        />
-        <Input type='password'
-          onChange={setConfirmPassword} value={confirmPassword}
-          label='Confirm Password'
-          className='outline-none bg-transparent
+          className='outline-none bg-transparent text-gray-700 font-medium
           px-1 border-b-2 pb-0.5 border-slate-900'
         />
       </div>
       <button onClick={handleRegister}
         className='w-full py-2 bg-slate-900 font-medium 
-      tracking-wide text-white/90 rounded'>
+          tracking-wide text-white/90 rounded'>
         Sign Up
       </button>
       <div className='flex flex-col space-y-2 justify-center items-center'>
