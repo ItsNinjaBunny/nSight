@@ -12,9 +12,8 @@ type Props = {
 export const MobileNavigation = ({ selected, links, className }: Props) => {
   const [settings, setSettings] = useState(false);
 
-  const toggleSettings = () => setSettings(true);
+  const toggleSettings = () => setSettings((prev) => !prev);
   const closeSettings = () => setSettings(false);
-  console.log(settings);
 
   return (
     <>
@@ -22,7 +21,7 @@ export const MobileNavigation = ({ selected, links, className }: Props) => {
         <ul className='flex justify-evenly items-center w-full'>
           {
             links.map((link) => {
-              if (link.name !== 'Profile') {
+              if(link.name !== 'Profile') {
                 return (
                   <li key={link.name}>
                     <Link href={link.href}>{link.icon}</Link>
@@ -31,7 +30,7 @@ export const MobileNavigation = ({ selected, links, className }: Props) => {
               }
 
               return (
-                <li id='profile-settings' className='' onClick={settings ? closeSettings : toggleSettings} key={link.name}>
+                <li id='profile-settings' className='' onClick={toggleSettings} key={link.name}>
                   {link.icon}
                 </li>
               )

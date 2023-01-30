@@ -31,7 +31,7 @@ export const SignIn = ({ isSignIn, setIsSignIn }: Props) => {
   }
 
   const handleLogin = async () => {
-    if (!isBlank(username, password)) {
+    if(!isBlank(username, password)) {
       setError('Please fill out all fields');
       return;
     }
@@ -43,18 +43,18 @@ export const SignIn = ({ isSignIn, setIsSignIn }: Props) => {
       },
       body: JSON.stringify({
         email: username.toLowerCase(),
-        password: password
+        password: password,
       }),
     });
 
     console.log(data);
 
-    if ((!data.success) && (data.error && data.status)) {
+    if((!data.success) && (data.error && data.status)) {
       setError(data.error);
       console.error(data);
     }
 
-    if ((data.success) && (data.accessToken)) {
+    if((data.success) && (data.accessToken)) {
       localStorage.setItem('accessToken', data.accessToken);
       return router.push('/');
     }
